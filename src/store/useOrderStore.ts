@@ -81,8 +81,17 @@ export const useOrderStore = create<OrderState>((set, get) => ({
             const { data: patients, error: patientsError } = await supabase.from('patients').select('*');
             if (patientsError) throw patientsError;
 
-            const { data: orders, error: ordersError } = await supabase.from('orders').select('*');
+            // Buscar últimos 100 pedidos sem filtro de data (evita problemas de timezone)
+            const { data: orders, error: ordersError } = await supabase
+                .from('orders')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(100);
+
             if (ordersError) throw ordersError;
+
+            console.log('📦 Pedidos carregados do banco:', orders?.length || 0, 'pedidos');
+            console.log('🔍 Primeiros 3 pedidos:', orders?.slice(0, 3));
 
             const { data: notices, error: noticesError } = await supabase.from('notices').select('*').order('created_at', { ascending: false });
 
@@ -107,6 +116,8 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                 fastingReason: order.fasting_reason
             })) || [];
 
+            console.log('✅ Pedidos formatados:', formattedOrders.length);
+
             // Map notices
             const formattedNotices = notices?.map(n => ({
                 id: n.id,
@@ -121,21 +132,35 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                 notices: formattedNotices
             });
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('❌ Error fetching data:', error);
         } finally {
             set({ isLoading: false });
         }
     },
 
     subscribeToChanges: () => {
+        console.log('🔔 Iniciando subscription realtime...');
+
         const channel = supabase
             .channel('realtime-dashboard')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => get().fetchData())
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'patients' }, () => get().fetchData())
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, () => get().fetchData())
-            .subscribe();
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+                console.log('🔄 Evento realtime em ORDERS:', payload.eventType, payload.new);
+                get().fetchData();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'patients' }, (payload) => {
+                console.log('🔄 Evento realtime em PATIENTS:', payload.eventType);
+                get().fetchData();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, (payload) => {
+                console.log('🔄 Evento realtime em NOTICES:', payload.eventType);
+                get().fetchData();
+            })
+            .subscribe((status) => {
+                console.log('📡 Status da subscription:', status);
+            });
 
         return () => {
+            console.log('🔕 Removendo subscription realtime...');
             supabase.removeChannel(channel);
         };
     },
