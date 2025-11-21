@@ -91,7 +91,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
             if (ordersError) throw ordersError;
 
             console.log('📦 Pedidos carregados do banco:', orders?.length || 0, 'pedidos');
-            console.log('🔍 Primeiros 3 pedidos:', orders?.slice(0, 3));
+            console.log('🔍 Primeiros 3 pedidos (RAW):', orders?.slice(0, 3));
 
             const { data: notices, error: noticesError } = await supabase.from('notices').select('*').order('created_at', { ascending: false });
 
@@ -101,22 +101,38 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                 ward: p.sector
             })) || [];
 
+            console.log('👥 Pacientes formatados:', formattedPatients.length);
+
             // Convert string dates to Date objects for orders
-            const formattedOrders = orders?.map(order => ({
-                ...order,
-                id: order.id,
-                patientId: order.patient_id,
-                createdAt: new Date(order.created_at),
-                deliveredAt: order.delivered_at ? new Date(order.delivered_at) : undefined,
-                patientName: order.patient_name,
-                dietType: order.diet, // Coluna 'diet' no Supabase
-                hasCompanion: order.has_companion,
-                companionDiet: order.companion_diet,
-                isFasting: order.is_fasting,
-                fastingReason: order.fasting_reason
-            })) || [];
+            const formattedOrders = orders?.map(order => {
+                const formatted = {
+                    ...order,
+                    id: order.id,
+                    patientId: order.patient_id,
+                    createdAt: new Date(order.created_at),
+                    deliveredAt: order.delivered_at ? new Date(order.delivered_at) : undefined,
+                    patientName: order.patient_name,
+                    dietType: order.diet, // Coluna 'diet' no Supabase
+                    hasCompanion: order.has_companion,
+                    companionDiet: order.companion_diet,
+                    isFasting: order.is_fasting,
+                    fastingReason: order.fasting_reason
+                };
+
+                // Log detalhado do primeiro pedido para debug
+                if (orders.indexOf(order) === 0) {
+                    console.log('🔬 Primeiro pedido ANTES da formatação:', order);
+                    console.log('🔬 Primeiro pedido DEPOIS da formatação:', formatted);
+                }
+
+                return formatted;
+            }) || [];
 
             console.log('✅ Pedidos formatados:', formattedOrders.length);
+            console.log('📋 Status dos pedidos:', formattedOrders.reduce((acc, o) => {
+                acc[o.status] = (acc[o.status] || 0) + 1;
+                return acc;
+            }, {} as Record<string, number>));
 
             // Map notices
             const formattedNotices = notices?.map(n => ({
@@ -183,12 +199,54 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     },
 
     removePatient: async (id) => {
+        // Confirmação do usuário
+        if (typeof window !== 'undefined') {
+            const confirmed = window.confirm(
+                "⚠️ Tem certeza?\n\nIsso apagará o paciente e TODO o histórico de pedidos dele.\n\nEsta ação não pode ser desfeita."
+            );
+            if (!confirmed) return;
+        }
+
         try {
-            const { error } = await supabase.from('patients').delete().match({ id });
-            if (error) throw error;
+            console.log('🗑️ Iniciando exclusão do paciente:', id);
+
+            // Passo 1: Apagar os pedidos desse paciente primeiro (evita Foreign Key Constraint)
+            const { error: orderError } = await supabase
+                .from('orders')
+                .delete()
+                .eq('patient_id', id);
+
+            if (orderError) {
+                console.error('❌ Erro ao deletar pedidos:', orderError);
+                throw orderError;
+            }
+
+            console.log('✅ Pedidos do paciente deletados');
+
+            // Passo 2: Agora sim, apagar o paciente
+            const { error: patientError } = await supabase
+                .from('patients')
+                .delete()
+                .eq('id', id);
+
+            if (patientError) {
+                console.error('❌ Erro ao deletar paciente:', patientError);
+                throw patientError;
+            }
+
+            console.log('✅ Paciente deletado com sucesso');
+
+            // Atualizar dados
             await get().fetchData();
-        } catch (error) {
-            console.error('Error removing patient:', error);
+
+            if (typeof window !== 'undefined') {
+                alert('✅ Paciente removido com sucesso.');
+            }
+        } catch (error: any) {
+            console.error('❌ Error removing patient:', error);
+            if (typeof window !== 'undefined') {
+                alert(`❌ Erro ao excluir paciente:\n\n${error.message || 'Verifique o console para mais detalhes.'}`);
+            }
         }
     },
 
@@ -250,20 +308,47 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     },
 
     checkDuplicateOrder: (patientId, meal) => {
+        const state = get();
+
+        console.log('🔍 Verificando duplicidade para:', { patientId, meal });
+        console.log('📊 Total de pedidos no estado:', state.orders.length);
+
+        // Obter data local de hoje (sem hora)
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const state = get();
-        return state.orders.some(order => {
+        const todayTimestamp = today.getTime();
+
+        // Filtrar pedidos do mesmo paciente e mesma refeição
+        const matchingOrders = state.orders.filter(order => {
             const orderDate = new Date(order.createdAt);
             orderDate.setHours(0, 0, 0, 0);
+            const orderTimestamp = orderDate.getTime();
 
-            return (
+            const isMatch = (
                 order.patientId === patientId &&
                 order.meal === meal &&
-                orderDate.getTime() === today.getTime()
+                orderTimestamp === todayTimestamp
             );
+
+            if (isMatch) {
+                console.log('⚠️ Pedido duplicado encontrado:', {
+                    id: order.id,
+                    patientName: order.patientName,
+                    meal: order.meal,
+                    status: order.status,
+                    createdAt: order.createdAt,
+                    orderDate: orderDate.toLocaleDateString(),
+                    today: today.toLocaleDateString()
+                });
+            }
+
+            return isMatch;
         });
+
+        console.log('🔎 Pedidos duplicados encontrados:', matchingOrders.length);
+
+        return matchingOrders.length > 0;
     },
 
     // Notices Implementation
