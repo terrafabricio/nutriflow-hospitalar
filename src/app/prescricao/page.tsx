@@ -8,7 +8,7 @@ const dietTypes: DietType[] = ['Livre', 'Branda', 'Pastosa', 'Cremosa', 'Líquid
 const modifiers: DietModifier[] = ['Nenhuma', 'Hipossódica', 'Hipolipídica', 'Diabetes (DM)', 'Renal', 'Neutropênica'];
 
 export default function PrescriptionPage() {
-    const { patients, orders, addOrder, addPatient, checkDuplicateOrder } = useOrderStore();
+    const { patients, addOrder, addPatient, checkDuplicateOrder } = useOrderStore();
 
     // UI States
     const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
@@ -16,21 +16,6 @@ export default function PrescriptionPage() {
     const [isAddingPatient, setIsAddingPatient] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-    // Form States
-    const [diet, setDiet] = useState<DietType>('Livre');
-    const [modifier, setModifier] = useState<DietModifier>('Nenhuma');
-    const [meal, setMeal] = useState<'Café da Manhã' | 'Almoço' | 'Lanche da Tarde' | 'Jantar' | 'Ceia'>('Café da Manhã');
-    const [notes, setNotes] = useState('');
-    const [hasCompanion, setHasCompanion] = useState(false);
-    const [companionDiet, setCompanionDiet] = useState<'Padrão' | 'Personalizada'>('Padrão');
-    const [isFasting, setIsFasting] = useState(false);
-    const [fastingReason, setFastingReason] = useState('');
-
-    // New Patient Form States
-    const [newPatientName, setNewPatientName] = useState('');
-    const [newPatientBed, setNewPatientBed] = useState('');
-    const [newPatientWard, setNewPatientWard] = useState('');
 
     // Smart Meal Selection Logic
     const getSuggestedMeal = () => {
@@ -53,10 +38,20 @@ export default function PrescriptionPage() {
         return 'Café da Manhã'; // Default for night/early morning
     };
 
-    // Auto-select meal on mount
-    useEffect(() => {
-        setMeal(getSuggestedMeal());
-    }, []);
+    // Form States
+    const [diet, setDiet] = useState<DietType>('Livre');
+    const [modifier, setModifier] = useState<DietModifier>('Nenhuma');
+    const [meal, setMeal] = useState<'Café da Manhã' | 'Almoço' | 'Lanche da Tarde' | 'Jantar' | 'Ceia'>(() => getSuggestedMeal());
+    const [notes, setNotes] = useState('');
+    const [hasCompanion, setHasCompanion] = useState(false);
+    const [companionDiet, setCompanionDiet] = useState<'Padrão' | 'Personalizada'>('Padrão');
+    const [isFasting, setIsFasting] = useState(false);
+    const [fastingReason, setFastingReason] = useState('');
+
+    // New Patient Form States
+    const [newPatientName, setNewPatientName] = useState('');
+    const [newPatientBed, setNewPatientBed] = useState('');
+    const [newPatientWard, setNewPatientWard] = useState('');
 
     // Derived State
     const filteredPatients = useMemo(() => {
@@ -149,21 +144,23 @@ export default function PrescriptionPage() {
                 setFastingReason('');
                 setSubmitStatus('idle');
             }, 3000);
-        } catch (error) {
+        } catch {
             setSubmitStatus('error');
             setTimeout(() => setSubmitStatus('idle'), 3000);
         }
     };
 
     return (
-        <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-            <header className="mb-6 shrink-0">
-                <h1 className="text-3xl font-bold text-slate-800">Prescrição de Dietas</h1>
-                <p className="text-slate-500">Gerencie pacientes e solicite refeições</p>
+        <div className="max-w-7xl mx-auto h-[calc(100vh-8rem)] flex flex-col space-y-4">
+            <header className="shrink-0 flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] tracking-tight">Prescrição</h1>
+                    <p className="text-[var(--text-secondary)]">Gerencie pacientes e solicite refeições</p>
+                </div>
             </header>
 
             {successMessage && (
-                <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center gap-2 animate-fade-in shrink-0">
+                <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg flex items-center gap-2 animate-fade-in shrink-0">
                     <CheckCircle size={20} />
                     <span>{successMessage}</span>
                 </div>
@@ -171,21 +168,21 @@ export default function PrescriptionPage() {
 
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
                 {/* LEFT COLUMN: PATIENT LIST & SEARCH */}
-                <div className="lg:col-span-4 flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="p-4 border-b border-slate-100 space-y-3">
+                <div className="lg:col-span-4 flex flex-col card overflow-hidden">
+                    <div className="p-4 border-b border-[var(--border-subtle)] space-y-3 bg-[var(--surface)]">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)]" size={18} />
                             <input
                                 type="text"
                                 placeholder="Buscar paciente ou leito..."
-                                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-lg focus:ring-2 focus:ring-[var(--primaryGlow)] focus:border-[var(--primary)] outline-none text-sm transition-all"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
                         <button
                             onClick={() => { setIsAddingPatient(true); setSelectedPatientId(null); }}
-                            className="w-full py-2 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 text-sm"
+                            className="btn btn-ghost w-full justify-center border border-dashed border-[var(--border-subtle)] hover:border-[var(--primary)] text-[var(--primary)]"
                         >
                             <Plus size={16} /> Novo Paciente
                         </button>
@@ -193,7 +190,7 @@ export default function PrescriptionPage() {
 
                     <div className="flex-1 overflow-y-auto p-2 space-y-1">
                         {filteredPatients.length === 0 ? (
-                            <div className="text-center py-8 text-slate-400 text-sm">
+                            <div className="text-center py-8 text-[var(--text-muted)] text-sm italic">
                                 Nenhum paciente encontrado.
                             </div>
                         ) : (
@@ -202,19 +199,19 @@ export default function PrescriptionPage() {
                                     key={patient.id}
                                     onClick={() => handlePatientSelect(patient.id)}
                                     className={`w-full text-left p-3 rounded-lg border transition-all group ${selectedPatientId === patient.id
-                                        ? 'bg-blue-50 border-blue-500 ring-1 ring-blue-500 z-10'
-                                        : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200'
+                                        ? 'bg-[var(--surface2)] border-[var(--primary)] shadow-sm'
+                                        : 'bg-transparent border-transparent hover:bg-[var(--surface2)] hover:border-[var(--border-subtle)]'
                                         }`}
                                 >
                                     <div className="flex justify-between items-start">
-                                        <div className={`font-bold ${selectedPatientId === patient.id ? 'text-blue-800' : 'text-slate-700'}`}>
+                                        <div className={`font-bold ${selectedPatientId === patient.id ? 'text-[var(--text-main)]' : 'text-[var(--text-secondary)]'}`}>
                                             {patient.name}
                                         </div>
-                                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${selectedPatientId === patient.id ? 'bg-blue-200 text-blue-800' : 'bg-slate-100 text-slate-600'}`}>
+                                        <span className={`text-xs font-bold px-2 py-0.5 rounded border ${selectedPatientId === patient.id ? 'bg-[var(--primary)] text-[var(--text-main)] border-transparent' : 'bg-[var(--surface2)] text-[var(--text-muted)] border-[var(--border-subtle)]'}`}>
                                             {patient.bed}
                                         </span>
                                     </div>
-                                    <div className="text-xs text-slate-500 mt-1">
+                                    <div className="text-xs text-[var(--text-muted)] mt-1">
                                         {patient.ward}
                                     </div>
                                 </button>
@@ -227,40 +224,40 @@ export default function PrescriptionPage() {
                 <div className="lg:col-span-8 flex flex-col">
                     {isAddingPatient ? (
                         /* MANUAL ADMISSION FORM */
-                        <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200 h-full">
-                            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 mb-6">
-                                <UserPlus className="text-blue-600" />
+                        <div className="card p-8 h-full bg-[var(--surface)]">
+                            <h2 className="text-xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] flex items-center gap-2 mb-6">
+                                <UserPlus className="text-[var(--primary)]" />
                                 Admissão Manual de Paciente
                             </h2>
                             <form onSubmit={handleNewPatientSubmit} className="max-w-lg space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
+                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Nome Completo</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="input"
                                         value={newPatientName}
                                         onChange={(e) => setNewPatientName(e.target.value)}
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Leito</label>
+                                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Leito</label>
                                         <input
                                             type="text"
                                             required
                                             placeholder="Ex: 204B"
-                                            className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="input"
                                             value={newPatientBed}
                                             onChange={(e) => setNewPatientBed(e.target.value)}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Ala / Setor</label>
+                                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Ala / Setor</label>
                                         <input
                                             type="text"
                                             placeholder="Ex: Clínica Médica"
-                                            className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="input"
                                             value={newPatientWard}
                                             onChange={(e) => setNewPatientWard(e.target.value)}
                                         />
@@ -270,13 +267,13 @@ export default function PrescriptionPage() {
                                     <button
                                         type="button"
                                         onClick={() => setIsAddingPatient(false)}
-                                        className="px-6 py-3 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
+                                        className="btn btn-ghost"
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition-colors"
+                                        className="btn btn-primary shadow-md"
                                     >
                                         Salvar Paciente
                                     </button>
@@ -285,18 +282,18 @@ export default function PrescriptionPage() {
                         </div>
                     ) : selectedPatient ? (
                         /* PRESCRIPTION FORM */
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-full overflow-y-auto">
-                            <div className="flex items-center justify-between mb-6 pb-6 border-b border-slate-100">
+                        <div className="card p-6 h-full overflow-y-auto bg-[var(--surface)]">
+                            <div className="flex items-center justify-between mb-6 pb-6 border-b border-[var(--border-subtle)]">
                                 <div>
-                                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                        <FileText className="text-blue-600" />
+                                    <h2 className="text-xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] flex items-center gap-2">
+                                        <FileText className="text-[var(--primary)]" />
                                         Nova Prescrição
                                     </h2>
-                                    <p className="text-sm text-slate-500 mt-1">Defina a dieta para o turno atual</p>
+                                    <p className="text-sm text-[var(--text-muted)] mt-1">Defina a dieta para o turno atual</p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-2xl font-bold text-slate-800">{selectedPatient.name}</div>
-                                    <div className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block">
+                                    <div className="text-2xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)]">{selectedPatient.name}</div>
+                                    <div className="text-sm font-medium text-[var(--text-main)] bg-[var(--primary)] px-3 py-1 rounded-full inline-block shadow-[var(--shadow-glow)]">
                                         Leito {selectedPatient.bed}
                                     </div>
                                 </div>
@@ -305,15 +302,15 @@ export default function PrescriptionPage() {
                             <form onSubmit={handleOrderSubmit} className="space-y-8">
 
                                 {/* FASTING TOGGLE */}
-                                <div className={`p-4 rounded-xl border-2 transition-all ${isFasting ? 'bg-red-50 border-red-500' : 'bg-slate-50 border-slate-200'}`}>
+                                <div className={`p-4 rounded-xl border transition-all ${isFasting ? 'bg-red-50 border-red-500 dark:bg-red-900/10 dark:border-red-900' : 'bg-[var(--surface2)] border-[var(--border-subtle)]'}`}>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-full ${isFasting ? 'bg-red-100 text-red-600' : 'bg-slate-200 text-slate-500'}`}>
+                                            <div className={`p-2 rounded-full ${isFasting ? 'bg-red-100 text-red-600' : 'bg-[var(--surface)] text-[var(--text-muted)]'}`}>
                                                 <AlertCircle size={24} />
                                             </div>
                                             <div>
-                                                <h3 className={`font-bold ${isFasting ? 'text-red-700' : 'text-slate-700'}`}>PACIENTE EM JEJUM / PRÉ-OP</h3>
-                                                <p className="text-xs text-slate-500">Ative para suspender a alimentação</p>
+                                                <h3 className={`font-bold ${isFasting ? 'text-red-700' : 'text-[var(--text-main)]'}`}>PACIENTE EM JEJUM / PRÉ-OP</h3>
+                                                <p className="text-xs text-[var(--text-secondary)]">Ative para suspender a alimentação</p>
                                             </div>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
@@ -323,7 +320,7 @@ export default function PrescriptionPage() {
                                                 checked={isFasting}
                                                 onChange={(e) => setIsFasting(e.target.checked)}
                                             />
-                                            <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-red-600"></div>
+                                            <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[var(--primaryGlow)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[var(--danger)]"></div>
                                         </label>
                                     </div>
 
@@ -344,12 +341,12 @@ export default function PrescriptionPage() {
 
                                 {/* MEAL SELECTION (Smart) */}
                                 <div className={`transition-opacity ${isFasting ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2">Refeição (Sugestão Automática)</label>
+                                    <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Refeição (Sugestão Automática)</label>
                                     <select
                                         value={meal}
-                                        onChange={(e) => setMeal(e.target.value as any)}
+                                        onChange={(e) => setMeal(e.target.value as 'Café da Manhã' | 'Almoço' | 'Lanche da Tarde' | 'Jantar' | 'Ceia')}
                                         disabled={isFasting}
-                                        className="w-full p-3 bg-blue-50 border border-blue-200 text-blue-800 font-bold rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        className="input font-bold text-[var(--text-main)]"
                                     >
                                         <option value="Café da Manhã">Café da Manhã</option>
                                         <option value="Almoço">Almoço</option>
@@ -357,7 +354,7 @@ export default function PrescriptionPage() {
                                         <option value="Jantar">Jantar</option>
                                         <option value="Ceia">Ceia</option>
                                     </select>
-                                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                                    <p className="text-xs text-[var(--text-muted)] mt-1 flex items-center gap-1">
                                         <Clock size={12} />
                                         Horário atual: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
@@ -366,23 +363,23 @@ export default function PrescriptionPage() {
                                 {/* DIET SELECTION (Disabled if Fasting) */}
                                 <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-opacity ${isFasting ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Dieta Base</label>
+                                        <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Dieta Base</label>
                                         <select
                                             value={diet}
                                             onChange={(e) => setDiet(e.target.value as DietType)}
                                             disabled={isFasting}
-                                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                            className="input"
                                         >
                                             {dietTypes.map(type => <option key={type} value={type}>{type}</option>)}
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Modificador</label>
+                                        <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Modificador</label>
                                         <select
                                             value={modifier}
                                             onChange={(e) => setModifier(e.target.value as DietModifier)}
                                             disabled={isFasting}
-                                            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                            className="input"
                                         >
                                             {modifiers.map(mod => <option key={mod} value={mod}>{mod}</option>)}
                                         </select>
@@ -390,25 +387,25 @@ export default function PrescriptionPage() {
                                 </div>
 
                                 {modifier === 'Neutropênica' && !isFasting && (
-                                    <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg flex gap-3">
-                                        <AlertCircle className="text-red-600 shrink-0" />
+                                    <div className="p-4 bg-[var(--warning)]/10 border-l-4 border-[var(--warning)] rounded-r-lg flex gap-3">
+                                        <AlertCircle className="text-[var(--warning)] shrink-0" />
                                         <div>
-                                            <h4 className="font-bold text-red-800 text-sm">Protocolo de Segurança</h4>
-                                            <p className="text-red-700 text-sm mt-1">Proibido alimentos crus. Higienização rigorosa obrigatória.</p>
+                                            <h4 className="font-bold text-[var(--warning)] text-sm">Protocolo de Segurança</h4>
+                                            <p className="text-[var(--text-secondary)] text-sm mt-1">Proibido alimentos crus. Higienização rigorosa obrigatória.</p>
                                         </div>
                                     </div>
                                 )}
 
                                 {/* COMPANION SECTION */}
-                                <div className="p-5 border border-slate-200 rounded-xl bg-slate-50/50">
+                                <div className="p-5 border border-[var(--border-subtle)] rounded-xl bg-[var(--surface2)]">
                                     <div className="flex items-center gap-3 mb-4">
-                                        <Users className="text-slate-500" size={20} />
-                                        <label className="font-bold text-slate-700 flex items-center gap-2 cursor-pointer select-none">
+                                        <Users className="text-[var(--text-muted)]" size={20} />
+                                        <label className="font-bold text-[var(--text-main)] flex items-center gap-2 cursor-pointer select-none">
                                             <input
                                                 type="checkbox"
                                                 checked={hasCompanion}
                                                 onChange={(e) => setHasCompanion(e.target.checked)}
-                                                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                                                className="w-5 h-5 text-[var(--primary)] rounded focus:ring-[var(--primaryGlow)]"
                                             />
                                             Possui Acompanhante Autorizada?
                                         </label>
@@ -416,7 +413,7 @@ export default function PrescriptionPage() {
 
                                     {hasCompanion && (
                                         <div className="ml-8 animate-fade-in">
-                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tipo de Refeição do Acompanhante</label>
+                                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Tipo de Refeição do Acompanhante</label>
                                             <div className="flex gap-4">
                                                 <label className="flex items-center gap-2 cursor-pointer">
                                                     <input
@@ -425,9 +422,9 @@ export default function PrescriptionPage() {
                                                         value="Padrão"
                                                         checked={companionDiet === 'Padrão'}
                                                         onChange={() => setCompanionDiet('Padrão')}
-                                                        className="text-blue-600 focus:ring-blue-500"
+                                                        className="text-[var(--primary)] focus:ring-[var(--primaryGlow)]"
                                                     />
-                                                    <span className="text-sm text-slate-700">Padrão (Geral)</span>
+                                                    <span className="text-sm text-[var(--text-main)]">Padrão (Geral)</span>
                                                 </label>
                                                 <label className="flex items-center gap-2 cursor-pointer">
                                                     <input
@@ -436,9 +433,9 @@ export default function PrescriptionPage() {
                                                         value="Personalizada"
                                                         checked={companionDiet === 'Personalizada'}
                                                         onChange={() => setCompanionDiet('Personalizada')}
-                                                        className="text-blue-600 focus:ring-blue-500"
+                                                        className="text-[var(--primary)] focus:ring-[var(--primaryGlow)]"
                                                     />
-                                                    <span className="text-sm text-slate-700">Personalizada (Gestante/Nutriz)</span>
+                                                    <span className="text-sm text-[var(--text-main)]">Personalizada (Gestante/Nutriz)</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -446,29 +443,29 @@ export default function PrescriptionPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2">Observações</label>
+                                    <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Observações</label>
                                     <textarea
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}
                                         rows={3}
-                                        className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        className="input resize-none"
                                         placeholder="Ex: Alergias, preferências..."
                                     />
                                 </div>
 
-                                <div className="pt-4 border-t border-slate-100">
+                                <div className="pt-4 border-t border-[var(--border-subtle)]">
                                     <button
                                         type="submit"
                                         disabled={submitStatus === 'loading' || submitStatus === 'success'}
-                                        className={`w-full py-4 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-90 disabled:cursor-not-allowed ${submitStatus === 'success'
-                                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                                                : submitStatus === 'error'
-                                                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                                                    : submitStatus === 'loading'
-                                                        ? 'bg-slate-400 text-white cursor-wait'
-                                                        : isFasting
-                                                            ? 'bg-red-600 hover:bg-red-700 text-white'
-                                                            : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white'
+                                        className={`btn w-full justify-center h-12 text-lg shadow-lg hover:shadow-xl transition-all transform active:scale-[0.99] disabled:opacity-90 disabled:cursor-not-allowed ${submitStatus === 'success'
+                                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                            : submitStatus === 'error'
+                                                ? 'bg-red-600 hover:bg-red-700 text-white'
+                                                : submitStatus === 'loading'
+                                                    ? 'bg-[var(--text-muted)] text-[var(--surface)] cursor-wait'
+                                                    : isFasting
+                                                        ? 'bg-red-600 hover:bg-red-700 text-white'
+                                                        : 'btn-primary'
                                             }`}
                                     >
                                         {submitStatus === 'loading' ? (
@@ -498,9 +495,9 @@ export default function PrescriptionPage() {
                         </div>
                     ) : (
                         /* EMPTY STATE */
-                        <div className="h-full flex flex-col items-center justify-center text-slate-400 bg-slate-50/50 rounded-xl border-2 border-dashed border-slate-200 p-8">
+                        <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] bg-[var(--surface2)] rounded-xl border-2 border-dashed border-[var(--border-subtle)] p-8">
                             <User className="w-16 h-16 mb-4 opacity-20" />
-                            <h3 className="text-lg font-medium text-slate-600">Nenhum paciente selecionado</h3>
+                            <h3 className="text-lg font-medium text-[var(--text-main)]">Nenhum paciente selecionado</h3>
                             <p className="text-sm max-w-xs text-center mt-2">Selecione um paciente na lista ao lado ou cadastre uma nova admissão.</p>
                         </div>
                     )}

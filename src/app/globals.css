@@ -1,10 +1,152 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+@theme {
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space);
+
+  /* Lume Brand Colors mapped to Tailwind v4 */
+  --color-primary: var(--primary);
+  --color-primary-glow: var(--primaryGlow);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface2);
+  --color-text-main: var(--text-main);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-subtle: var(--border-subtle);
+}
+
+:root {
+  /* Brand Palette - Lume */
+  --primary: #ccff00;
+  /* Accent Lime */
+  --primaryGlow: rgba(204, 255, 0, 0.4);
+  --accent: #a855f7;
+  /* Purple */
+
+  /* Clinical Premium Base */
+  --bg: #fbfcf8;
+  --surface: #ffffff;
+  --surface2: #f6f8ee;
+
+  /* Typography Colors */
+  --text-main: #191d0c;
+  --text-secondary: #5c6645;
+  --text-muted: #9ca3af;
+
+  /* UI Elements */
+  --border: #e4eacd;
+  --border-subtle: #f0f4e3;
+
+  /* Feedback */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -2px rgba(92, 102, 69, 0.08);
+  --shadow-glow: 0 0 15px var(--primaryGlow);
+}
+
+/* Dark Mode Overrides (Optional but implemented as requested) */
+.dark {
+  --bg: #0f110a;
+  --surface: #181a14;
+  --surface2: #22241d;
+  --text-main: #fbfcf8;
+  --text-secondary: #e4eacd;
+  --text-muted: #6b7280;
+  --border: #2a2d24;
+  --border-subtle: #22241d;
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+
+  /* Cards */
+  .card {
+    @apply bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-[var(--shadow-soft)] transition-all duration-200;
+  }
+
+  .card:hover {
+    @apply border-[var(--primary)] shadow-[var(--shadow-glow)];
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between;
+  }
+
+  .card-title {
+    @apply text-lg font-bold text-[var(--text-main)] font-[family-name:var(--font-space)];
+  }
+
+  /* Buttons */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-[var(--primary)] text-[var(--text-main)] shadow-[var(--shadow-glow)] hover:brightness-105 active:scale-95 border border-transparent;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-[var(--text-secondary)] hover:bg-[var(--surface2)] hover:text-[var(--text-main)];
+  }
+
+  .btn-accent {
+    @apply bg-[var(--accent)] text-white hover:brightness-110 shadow-md;
+  }
+
+  /* Form Elements */
+  .input {
+    @apply w-full px-4 py-2.5 rounded-[10px] bg-[var(--surface)] border border-[var(--border)] text-[var(--text-main)] outline-none transition-all;
+  }
+
+  .input:focus {
+    @apply border-[var(--primary)] ring-2 ring-[var(--primaryGlow)];
+  }
+
+  /* Badges & Chips */
+  .badge {
+    @apply px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider;
+  }
+
+  .badge-success {
+    @apply bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200;
+  }
+
+  .badge-warning {
+    @apply bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200;
+  }
+
+  .badge-danger {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+
+  .chip {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm bg-[var(--surface2)] text-[var(--text-secondary)] border border-[var(--border-subtle)];
+  }
+
+  /* KPI Card specialized */
+  .kpi-card {
+    @apply bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-[var(--shadow-soft)] transition-all duration-200 p-6 flex flex-col gap-2 hover:translate-y-[-2px];
+  }
+
+  .kpi-card:hover {
+    @apply border-[var(--primary)] shadow-[var(--shadow-glow)];
+  }
 }

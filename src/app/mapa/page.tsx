@@ -26,10 +26,10 @@ export default function ProductionMap() {
     };
 
     return (
-        <div className="space-y-10 pb-10">
+        <div className="space-y-8 pb-10">
             <header className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Mapa de Produção</h1>
-                <p className="text-slate-500 mt-1">Quantitativo de dietas para o próximo turno</p>
+                <h1 className="text-3xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] tracking-tight">Mapa de Produção</h1>
+                <p className="text-[var(--text-secondary)] mt-1">Quantitativo de dietas para o próximo turno</p>
             </header>
 
             {/* SEÇÃO 1: PRODUÇÃO DE ROTINA */}
@@ -116,24 +116,24 @@ export default function ProductionMap() {
                     />
 
                     {/* CARD NEUTROPÊNICA (CUSTOMIZADO) */}
-                    <div className="relative group bg-white p-6 rounded-xl shadow-sm border-t-4 border-red-400 hover:shadow-md transition-all duration-200">
+                    <div className="relative group bg-[var(--surface)] p-6 rounded-xl shadow-sm border-t-4 border-[var(--danger)] hover:shadow-md transition-all duration-200">
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-2">
-                                <ShieldAlert className="text-red-500" size={20} />
-                                <h3 className="font-bold text-slate-800 text-lg">Neutropênica</h3>
+                                <ShieldAlert className="text-[var(--danger)]" size={20} />
+                                <h3 className="font-bold text-[var(--text-main)] text-lg">Neutropênica</h3>
                             </div>
-                            <Info size={18} className="text-slate-300 group-hover:text-red-400 transition-colors cursor-help" />
+                            <Info size={18} className="text-[var(--text-muted)] group-hover:text-[var(--danger)] transition-colors cursor-help" />
                         </div>
 
                         <div className="flex items-baseline gap-2">
-                            <span className="text-5xl font-bold text-slate-800">
+                            <span className="text-5xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)]">
                                 {isLoading ? 0 : countByModifier('Neutropênica')}
                             </span>
-                            <span className="text-sm font-medium text-red-500 bg-red-50 px-2 py-1 rounded-full">
+                            <span className="text-sm font-medium text-[var(--danger)] bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full border border-red-100 dark:border-red-800">
                                 Crítico
                             </span>
                         </div>
-                        <p className="text-sm text-slate-500 mt-2">Risco de Infecção</p>
+                        <p className="text-sm text-[var(--text-secondary)] mt-2">Risco de Infecção</p>
 
                         {/* TOOLTIP */}
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-72 p-4 bg-slate-800 text-white text-sm rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
@@ -155,8 +155,8 @@ export default function ProductionMap() {
 }
 
 // Componente de Cabeçalho de Seção
-function SectionHeader({ title, color }: { title: string, color: string }) {
-    const colorClasses: any = {
+function SectionHeader({ title, color }: { title: string, color: 'emerald' | 'blue' | 'purple' }) {
+    const colorClasses: Record<string, string> = {
         emerald: "bg-emerald-500",
         blue: "bg-blue-500",
         purple: "bg-purple-500",
@@ -165,10 +165,10 @@ function SectionHeader({ title, color }: { title: string, color: string }) {
     return (
         <div className="flex items-center gap-3 mb-6">
             <div className={`w-1.5 h-6 rounded-full ${colorClasses[color]}`}></div>
-            <h2 className="text-lg font-semibold text-slate-700 uppercase tracking-wide text-xs">
+            <h2 className="text-lg font-semibold text-[var(--text-secondary)] uppercase tracking-wide text-xs">
                 {title}
             </h2>
-            <div className="h-px bg-slate-200 flex-1"></div>
+            <div className="h-px bg-[var(--border-subtle)] flex-1"></div>
         </div>
     );
 }
@@ -177,7 +177,7 @@ function SectionHeader({ title, color }: { title: string, color: string }) {
 interface DietCardProps {
     title: string;
     count: number;
-    icon: any;
+    icon: React.ElementType;
     borderColor: "emerald" | "blue" | "amber" | "red";
     textColor: "slate" | "amber";
     subtitle?: string;
@@ -189,30 +189,30 @@ function DietCard({ title, count, icon: Icon, borderColor, textColor, subtitle, 
         emerald: "border-t-emerald-500",
         blue: "border-t-blue-500",
         amber: "border-t-amber-500",
-        red: "border-t-red-400",
+        red: "border-t-[var(--danger)]",
     };
 
     const textColors = {
-        slate: "text-slate-800",
-        amber: "text-amber-700",
+        slate: "text-[var(--text-main)]",
+        amber: "text-amber-600 dark:text-amber-500",
     };
 
     return (
-        <div className={`bg-white p-6 rounded-xl shadow-sm border-t-4 ${borderColors[borderColor]} hover:shadow-md transition-all duration-200 group`}>
+        <div className={`card p-6 border-t-4 ${borderColors[borderColor]} hover:shadow-md transition-all duration-200 group`}>
             <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
-                    <Icon className={`text-slate-400 group-hover:text-slate-600 transition-colors`} size={20} />
+                    <Icon className={`text-[var(--text-muted)] group-hover:text-[var(--text-main)] transition-colors`} size={20} />
                     <h3 className={`font-bold text-lg ${textColors[textColor]}`}>{title}</h3>
                 </div>
-                {alert && <Info size={16} className="text-amber-400" />}
+                {alert && <Info size={16} className="text-[var(--warning)]" />}
             </div>
 
-            <div className="text-5xl font-bold text-slate-800 tracking-tight mb-2">
+            <div className="text-5xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] tracking-tight mb-2">
                 {count}
             </div>
 
             {subtitle && (
-                <p className="text-sm text-slate-400 font-medium border-t border-slate-50 pt-2 mt-2">
+                <p className="text-sm text-[var(--text-muted)] font-medium border-t border-[var(--border-subtle)] pt-2 mt-2">
                     {subtitle}
                 </p>
             )}

@@ -1,0 +1,281 @@
+﻿
+> snd-app@0.1.0 build
+> next build
+
+node.exe : [baseline-
+browser-mapping] The 
+data in this module 
+is over two months 
+old.  To ensure 
+accurate Baseline 
+data, please update: 
+`npm i baseline-brows
+er-mapping@latest -D`
+No C:\Program Files\n
+odejs\npm.ps1:29 
+caractere:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ([baseli   
+ ne-brows...ping@    
+latest -D`:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+ ÔÜá Warning: 
+Next.js inferred 
+your workspace root, 
+but it may not be 
+correct.
+ We detected 
+multiple lockfiles 
+and selected the 
+directory of 
+C:\Users\Fabr├¡cio Te
+rra\package-lock.json
+ as the root 
+directory.
+ To silence this 
+warning, set 
+`turbopack.root` in 
+your Next.js config, 
+or consider removing 
+one of the lockfiles 
+if it's not needed.
+   See https://nextjs
+.org/docs/app/api-ref
+erence/config/next-co
+nfig-js/turbopack#roo
+t-directory for more 
+information.
+ Detected additional 
+lockfiles: 
+   * 
+C:\Users\Fabr├¡cio Te
+rra\Documents\Projeto
+s\Alimenta├º├úo_hospi
+talar\package-lock.js
+on
+
+   Ôû▓ Next.js 16.0.3 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+[baseline-browser-map
+ping] The data in 
+this module is over 
+two months old.  To 
+ensure accurate 
+Baseline data, 
+please update: `npm 
+i baseline-browser-ma
+pping@latest -D`
+Error: Cannot apply 
+unknown utility 
+class `card`
+    [2m[at 
+onInvalidCandidate 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:21:1511)][0m
+    [2m[at Te 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:16:36038)][0m
+    [2m[at 
+C:\Users\Fabr├¡cio Te
+rra\Documents\Projeto
+s\Alimenta├º├úo_hospi
+talar\node_modules\ta
+ilwindcss\dist\lib.js
+:21:355][0m
+    [2m[at Tr 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:3:1718)][0m
+    [2m[at _ 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:3:1377)][0m
+    [2m[at Se 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:21:172)][0m
+    [2m[at ln 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:38:294)][0m
+    [2m[at async sn 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\t
+ailwindcss\dist\lib.j
+s:38:631)][0m
+    [2m[at async Qr 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\@
+tailwindcss\node\dist
+\index.js:10:3385)][
+0m
+    [2m[at async I 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\@
+tailwindcss\postcss\d
+ist\index.js:10:3978)
+][0m
+
+> Build error 
+occurred
+Error: Turbopack 
+build failed with 1 
+errors:
+./Documents/Projetos/
+Alimenta├º├úo_hospita
+lar/src/app/globals.c
+ss
+Error evaluating 
+Node.js code
+CssSyntaxError: 
+tailwindcss: 
+C:\Users\Fabr├¡cio Te
+rra\Documents\Projeto
+s\Alimenta├º├úo_hospi
+talar\src\app\globals
+.css:1:1: Cannot 
+apply unknown 
+utility class `card`
+    at Input.error (D
+ocuments/Projetos/Ali
+menta├º├úo_hospitalar
+/node_modules/postcss
+/lib/input.js:135:16)
+ [C:\Users\Fabr├¡cio 
+Terra\Documents\Proje
+tos\Alimenta├º├úo_hos
+pitalar\.next\build\c
+hunks\644f3_9a02dfa7.
+_.js:4651:22]
+    at Root.error (Do
+cuments/Projetos/Alim
+enta├º├úo_hospitalar/
+node_modules/postcss/
+lib/node.js:146:32) 
+[C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\.next\build\ch
+unks\644f3_9a02dfa7._
+.js:928:38]
+    [at Object.Once 
+(C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\node_modules\@
+tailwindcss\postcss\d
+ist\index.js:10:6912)
+]
+    at async 
+LazyResult.runAsync (
+Documents/Projetos/Al
+imenta├º├úo_hospitala
+r/node_modules/postcs
+s/lib/lazy-result.js:
+293:11) 
+[C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\.next\build\ch
+unks\644f3_9a02dfa7._
+.js:6206:21]
+    at async 
+transform (turbopack:
+///[turbopack-node]/t
+ransforms/postcss.ts:
+70:34) 
+[C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\.next\build\ch
+unks\[root-of-the-ser
+ver]__6ec4d6cc._.js:1
+40:36]
+    at async run (tur
+bopack:///[turbopack-
+node]/ipc/evaluate.ts
+:92:23) 
+[C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\.next\build\ch
+unks\[root-of-the-ser
+ver]__d0d73705._.js:4
+43:31]
+
+Import trace:
+  Client Component 
+Browser:
+    ./Documents/Proje
+tos/Alimenta├º├úo_hos
+pitalar/src/app/globa
+ls.css [Client 
+Component Browser]
+    ./Documents/Proje
+tos/Alimenta├º├úo_hos
+pitalar/src/app/layou
+t.tsx [Server 
+Component]
+
+
+    at async 
+transform (turbopack:
+///[turbopack-node]/t
+ransforms/postcss.ts:
+70:34) 
+[C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\.next\build\ch
+unks\[root-of-the-ser
+ver]__6ec4d6cc._.js:1
+40:36])
+    at async run (tur
+bopack:///[turbopack-
+node]/ipc/evaluate.ts
+:92:23) 
+[C:\Users\Fabr├¡cio T
+erra\Documents\Projet
+os\Alimenta├º├úo_hosp
+italar\.next\build\ch
+unks\[root-of-the-ser
+ver]__d0d73705._.js:4
+43:31])

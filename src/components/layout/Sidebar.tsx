@@ -22,29 +22,36 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu Button - Left outside sidebar for mobile trigger if Topbar doesn't handle it, 
+          but Topbar usually handles this now. Leaving as fallback/hidden. 
+      */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[var(--surface)] text-[var(--text-secondary)] rounded-md shadow-md"
         onClick={() => setIsOpen(!isOpen)}
+        style={{ display: 'none' }} /* Managed by Topbar usually */
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-md border-r border-slate-100 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
-          } md:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-[var(--surface)] border-r border-[var(--border-subtle)] transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } md:translate-x-0 shadow-[var(--shadow-soft)]`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-[var(--surface)]">
           {/* Header */}
-          <div className="p-6 border-b border-slate-100 flex flex-col items-center justify-center h-24">
-            <h1 className="text-xl font-bold text-slate-800 tracking-tight text-center">
-              NutriFlow <span className="text-indigo-600">Hospitalar</span>
-            </h1>
+          <div className="p-6 border-b border-[var(--border-subtle)] flex flex-col justify-center h-24">
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)] animate-pulse"></div>
+              <h1 className="text-xl font-bold text-[var(--text-main)] tracking-tight font-[family-name:var(--font-space)]">
+                NutriFlow
+              </h1>
+            </div>
+            <p className="text-[10px] text-[var(--text-secondary)] ml-5 tracking-widest uppercase opacity-70">Clinical Suite</p>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -53,33 +60,49 @@ export default function Sidebar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                    ? 'bg-indigo-50 text-indigo-700 font-semibold shadow-sm'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                      ? 'bg-[var(--surface2)] text-[var(--text-main)] font-semibold shadow-sm ring-1 ring-[var(--border-subtle)]'
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--surface2)] hover:text-[var(--text-main)]'
                     }`}
                 >
-                  <Icon size={20} className={isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"} />
-                  {item.name}
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--primary)] rounded-r-full shadow-[0_0_8px_var(--primaryGlow)]" />
+                  )}
+                  <Icon
+                    size={20}
+                    className={`transition-colors duration-200 ${isActive ? "text-[var(--text-main)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"
+                      }`}
+                  />
+                  <span>{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-1">
-            <span className="text-[10px] text-slate-400 uppercase tracking-wider">Desenvolvido por</span>
-            <div className="flex items-center gap-1.5 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
-              <img src="/logo_lume_icon.png" alt="Lume Digital" className="w-4 h-auto" />
-              <span className="text-[11px] font-bold text-slate-600">Lume Digital</span>
+          <div className="p-5 border-t border-[var(--border-subtle)] bg-[var(--surface)]">
+            <div className="flex flex-col gap-3">
+              <div className="p-3 rounded-lg bg-[var(--surface2)] border border-[var(--border-subtle)]">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-[var(--success)]"></div>
+                  <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Sistema Online</span>
+                </div>
+                <p className="text-[10px] text-[var(--text-muted)]">v2.4.0 (Stable)</p>
+              </div>
+
+              <div className="flex items-center justify-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity duration-300">
+                <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">Powered by</span>
+                <span className="text-[11px] font-bold text-[var(--text-main)]">Lume</span>
+              </div>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
+      {/* Overlay for mobile is handled in Topbar or here if needed, keeping simple here */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}

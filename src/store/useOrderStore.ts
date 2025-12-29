@@ -143,8 +143,8 @@ export const useOrderStore = create<OrderState>((set, get) => ({
             })) || [];
 
             set({
-                patients: formattedPatients as any,
-                orders: formattedOrders as any,
+                patients: formattedPatients as Patient[],
+                orders: formattedOrders as Order[],
                 notices: formattedNotices
             });
         } catch (error) {
@@ -183,18 +183,19 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
     addPatient: async (patient) => {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { ward, ...patientData } = patient;
             const dbPatient = {
-                ...patient,
-                sector: patient.ward
+                ...patientData,
+                sector: ward
             };
-            delete (dbPatient as any).ward;
 
             const { error } = await supabase.from('patients').insert([dbPatient]);
             if (error) throw error;
             await get().fetchData();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error adding patient:", JSON.stringify(error, null, 2));
-            if (error.message) console.error("Error message:", error.message);
+            if (error instanceof Error) console.error("Error message:", error.message);
         }
     },
 
@@ -242,9 +243,9 @@ export const useOrderStore = create<OrderState>((set, get) => ({
             if (typeof window !== 'undefined') {
                 alert('✅ Paciente removido com sucesso.');
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('❌ Error removing patient:', error);
-            if (typeof window !== 'undefined') {
+            if (typeof window !== 'undefined' && error instanceof Error) {
                 alert(`❌ Erro ao excluir paciente:\n\n${error.message || 'Verifique o console para mais detalhes.'}`);
             }
         }
@@ -273,15 +274,15 @@ export const useOrderStore = create<OrderState>((set, get) => ({
             const { error } = await supabase.from('orders').insert([dbOrder]);
             if (error) throw error;
             await get().fetchData();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error adding order FULL:", JSON.stringify(error, null, 2));
-            if (error) console.error("Error Details:", error.message, error.details, error.hint);
+            if (error instanceof Error) console.error("Error Details:", error.message);
         }
     },
 
     moveOrder: async (id, status) => {
         try {
-            const updateData: any = { status };
+            const updateData: Record<string, unknown> = { status };
             if (status === 'Entregue') {
                 updateData.delivered_at = new Date().toISOString();
             }

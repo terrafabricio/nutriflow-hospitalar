@@ -1,0 +1,41 @@
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ [33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Fabrício Terra\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\package-lock.json
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Error: Cannot apply unknown utility class `card`
+    [2m[at onInvalidCandidate [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:21:1511][0m[90m)[39m
+    [2m[at Te [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:16:36038][0m[90m)[39m
+    [2m[at [90mC:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:21:355][0m
+    [2m[at Tr [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:3:1718][0m[90m)[39m
+    [2m[at _ [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:3:1377][0m[90m)[39m
+    [2m[at Se [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:21:172][0m[90m)[39m
+    [2m[at ln [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:38:294][0m[90m)[39m
+    [2m[at async sn [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4mtailwindcss[24m\dist\lib.js:38:631][0m[90m)[39m
+    [2m[at async Qr [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4m@tailwindcss[24m\node\dist\index.js:10:3385][0m[90m)[39m
+    [2m[at async I [90m(C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\[39mnode_modules\[4m@tailwindcss[24m\postcss\dist\index.js:10:3978][0m[90m)[39m
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./Documents/Projetos/Alimentação_hospitalar/src/app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\src\app\globals.css:1:1: Cannot apply unknown utility class `card`
+    at Input.error (Documents/Projetos/Alimentação_hospitalar/node_modules/postcss/lib/input.js:135:16) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\644f3_9a02dfa7._.js:4651:22]
+    at Root.error (Documents/Projetos/Alimentação_hospitalar/node_modules/postcss/lib/node.js:146:32) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\644f3_9a02dfa7._.js:928:38]
+    [at Object.Once (C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    at async LazyResult.runAsync (Documents/Projetos/Alimentação_hospitalar/node_modules/postcss/lib/lazy-result.js:293:11) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\644f3_9a02dfa7._.js:6206:21]
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\[root-of-the-server]__6ec4d6cc._.js:140:36]
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\[root-of-the-server]__d0d73705._.js:443:31]
+
+Import trace:
+  Client Component Browser:
+    ./Documents/Projetos/Alimentação_hospitalar/src/app/globals.css [Client Component Browser]
+    ./Documents/Projetos/Alimentação_hospitalar/src/app/layout.tsx [Server Component]
+
+
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\[root-of-the-server]__6ec4d6cc._.js:140:36])
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [C:\Users\Fabrício Terra\Documents\Projetos\Alimentação_hospitalar\.next\build\chunks\[root-of-the-server]__d0d73705._.js:443:31])

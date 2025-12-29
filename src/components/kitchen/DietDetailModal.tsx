@@ -153,7 +153,7 @@ export default function DietDetailModal({ order, isOpen, onClose, onMove }: Diet
                                 <h4 className="font-bold text-amber-800 text-sm mb-1 flex items-center gap-2">
                                     <AlertTriangle size={16} /> Observações do Prescritor
                                 </h4>
-                                <p className="text-amber-900 italic">"{order.notes}"</p>
+                                <p className="text-amber-900 italic">&quot;{order.notes}&quot;</p>
                             </div>
                         )}
                     </div>

@@ -100,7 +100,7 @@ export default function ReportsPage() {
         doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
 
         // Tabela 1: Quantitativo por Dieta
-        const dietRows: any[] = dietTypes.map(type => {
+        const dietRows: (string | number)[][] = dietTypes.map(type => {
             const count = dietCounts[type] || 0;
             return [type, count];
         });
@@ -122,7 +122,7 @@ export default function ReportsPage() {
         autoTable(doc, {
             head: [['Setor / Ala', 'Quantidade']],
             body: wardRows,
-            startY: (doc as any).lastAutoTable.finalY + 15,
+            startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15,
             theme: 'grid',
             headStyles: { fillColor: [39, 174, 96] }, // Green
         });
@@ -138,7 +138,7 @@ export default function ReportsPage() {
             autoTable(doc, {
                 head: [['Índice de Aceitação', 'Quantidade']],
                 body: acceptanceRows,
-                startY: (doc as any).lastAutoTable.finalY + 15,
+                startY: (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15,
                 theme: 'grid',
                 headStyles: { fillColor: [142, 68, 173] }, // Purple
             });
@@ -158,18 +158,18 @@ export default function ReportsPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto">
-            <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto space-y-8">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-                        <BarChart3 className="text-blue-600" size={32} />
+                    <h1 className="text-3xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] tracking-tight flex items-center gap-3">
+                        <BarChart3 className="text-[var(--primary)]" size={32} />
                         Relatórios Gerenciais
                     </h1>
-                    <p className="text-slate-500">Indicadores de performance e mapa de produção diário</p>
+                    <p className="text-[var(--text-secondary)]">Indicadores de performance e mapa de produção diário</p>
                 </div>
                 <button
                     onClick={handleExportPDF}
-                    className="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-medium rounded-lg shadow-sm hover:bg-slate-50 flex items-center gap-2 transition-colors active:scale-95"
+                    className="btn btn-secondary border-[var(--border-subtle)] bg-[var(--surface)] text-[var(--text-main)] text-sm shadow-sm hover:shadow-md"
                 >
                     <Download size={18} />
                     Exportar PDF
@@ -177,7 +177,7 @@ export default function ReportsPage() {
             </header>
 
             {/* KPIS */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <KpiCard
                     title="Total de Refeições"
                     value={isLoading ? '-' : totalOrders.toString()}
@@ -202,14 +202,14 @@ export default function ReportsPage() {
             </div>
 
             {/* ÍNDICE DE ACEITAÇÃO ALIMENTAR */}
-            <div className="bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-8">
+            <div className="card p-6">
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                        <TrendingUp className="text-purple-600" size={24} />
+                    <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                        <TrendingUp className="text-purple-600 dark:text-purple-400" size={24} />
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold text-slate-800">Índice de Aceitação Alimentar</h2>
-                        <p className="text-sm text-slate-500">Avaliação de Resto-Ingesta</p>
+                        <h2 className="text-xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)]">Índice de Aceitação Alimentar</h2>
+                        <p className="text-sm text-[var(--text-secondary)]">Avaliação de Resto-Ingesta</p>
                     </div>
                 </div>
 
@@ -218,15 +218,15 @@ export default function ReportsPage() {
                         {/* Aceitação Total */}
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                <span className="text-sm font-medium text-[var(--text-secondary)] flex items-center gap-2">
                                     <span className="w-3 h-3 bg-emerald-500 rounded-full"></span>
                                     Aceitação Total
                                 </span>
-                                <span className="text-sm font-bold text-emerald-600">
+                                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                                     {acceptanceData.totalPercentage}% ({acceptanceData.total})
                                 </span>
                             </div>
-                            <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div className="w-full bg-[var(--surface2)] rounded-full h-3 overflow-hidden">
                                 <div
                                     className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-full transition-all duration-500"
                                     style={{ width: `${acceptanceData.totalPercentage}%` }}
@@ -237,15 +237,15 @@ export default function ReportsPage() {
                         {/* Aceitação Parcial */}
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                <span className="text-sm font-medium text-[var(--text-secondary)] flex items-center gap-2">
                                     <span className="w-3 h-3 bg-amber-500 rounded-full"></span>
                                     Aceitação Parcial
                                 </span>
-                                <span className="text-sm font-bold text-amber-600">
+                                <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
                                     {acceptanceData.partialPercentage}% ({acceptanceData.partial})
                                 </span>
                             </div>
-                            <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div className="w-full bg-[var(--surface2)] rounded-full h-3 overflow-hidden">
                                 <div
                                     className="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-500"
                                     style={{ width: `${acceptanceData.partialPercentage}%` }}
@@ -256,15 +256,15 @@ export default function ReportsPage() {
                         {/* Recusa */}
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                <span className="text-sm font-medium text-[var(--text-secondary)] flex items-center gap-2">
                                     <span className="w-3 h-3 bg-red-500 rounded-full"></span>
                                     Recusa
                                 </span>
-                                <span className="text-sm font-bold text-red-600">
+                                <span className="text-sm font-bold text-red-600 dark:text-red-400">
                                     {acceptanceData.refusedPercentage}% ({acceptanceData.refused})
                                 </span>
                             </div>
-                            <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div className="w-full bg-[var(--surface2)] rounded-full h-3 overflow-hidden">
                                 <div
                                     className="bg-gradient-to-r from-red-500 to-red-600 h-full rounded-full transition-all duration-500"
                                     style={{ width: `${acceptanceData.refusedPercentage}%` }}
@@ -272,15 +272,15 @@ export default function ReportsPage() {
                             </div>
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-slate-100">
-                            <p className="text-xs text-slate-500 text-center">
-                                Total de refeições avaliadas: <span className="font-bold text-slate-700">{acceptanceData.total + acceptanceData.partial + acceptanceData.refused}</span>
+                        <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
+                            <p className="text-xs text-[var(--text-muted)] text-center">
+                                Total de refeições avaliadas: <span className="font-bold text-[var(--text-main)]">{acceptanceData.total + acceptanceData.partial + acceptanceData.refused}</span>
                             </p>
                         </div>
                     </div>
                 ) : (
-                    <div className="text-center py-8 text-slate-400">
-                        <AlertCircle className="mx-auto mb-2" size={32} />
+                    <div className="text-center py-8 text-[var(--text-muted)]">
+                        <AlertCircle className="mx-auto mb-2 opacity-50" size={32} />
                         <p className="text-sm">Sem avaliações de aceitação hoje</p>
                         <p className="text-xs mt-1">As avaliações aparecem após a entrega das refeições</p>
                     </div>
@@ -288,25 +288,25 @@ export default function ReportsPage() {
             </div>
 
             {/* MAPA DE QUANTITATIVOS */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <TrendingUp className="text-slate-500" />
+            <div className="card overflow-hidden">
+                <div className="p-6 border-b border-[var(--border-subtle)] flex justify-between items-center bg-[var(--surface)]">
+                    <h2 className="text-xl font-bold text-[var(--text-main)] flex items-center gap-2 font-[family-name:var(--font-space)]">
+                        <TrendingUp className="text-[var(--text-muted)]" />
                         Mapa de Produção (Quantitativos)
                     </h2>
-                    <span className="text-sm text-slate-500">Atualizado em tempo real</span>
+                    <span className="text-sm text-[var(--text-muted)]">Atualizado em tempo real</span>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-slate-50 text-slate-600 uppercase text-xs font-bold tracking-wider">
+                        <thead className="bg-[var(--surface2)] text-[var(--text-secondary)] uppercase text-xs font-bold tracking-wider border-b border-[var(--border-subtle)]">
                             <tr>
                                 <th className="px-6 py-4">Tipo de Dieta</th>
                                 <th className="px-6 py-4 text-center">Quantidade</th>
                                 <th className="px-6 py-4 text-right">% do Total</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-[var(--border-subtle)]">
                             {dietTypes.map((type) => {
                                 const count = dietCounts[type] || 0;
                                 const percentage = totalOrders > 0 ? Math.round((count / totalOrders) * 100) : 0;
@@ -314,22 +314,22 @@ export default function ReportsPage() {
                                 if (count === 0) return null;
 
                                 return (
-                                    <tr key={type} className="hover:bg-slate-50/50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-slate-800">{type}</td>
+                                    <tr key={type} className="hover:bg-[var(--surface2)] transition-colors">
+                                        <td className="px-6 py-4 font-medium text-[var(--text-main)]">{type}</td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className="bg-blue-100 text-blue-800 py-1 px-3 rounded-full font-bold text-sm">
+                                            <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 py-1 px-3 rounded-full font-bold text-sm">
                                                 {count}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right text-slate-500">
+                                        <td className="px-6 py-4 text-right text-[var(--text-muted)]">
                                             <div className="flex items-center justify-end gap-2">
-                                                <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                                <div className="w-24 h-2 bg-[var(--surface2)] rounded-full overflow-hidden">
                                                     <div
-                                                        className="h-full bg-blue-500 rounded-full"
+                                                        className="h-full bg-[var(--primary)] rounded-full"
                                                         style={{ width: `${percentage}%` }}
                                                     />
                                                 </div>
-                                                <span className="w-8">{percentage}%</span>
+                                                <span className="w-8 font-medium">{percentage}%</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -337,7 +337,7 @@ export default function ReportsPage() {
                             })}
 
                             {/* LINHA DE TOTAL */}
-                            <tr className="bg-slate-50 font-bold text-slate-900">
+                            <tr className="bg-[var(--surface2)] font-bold text-[var(--text-main)]">
                                 <td className="px-6 py-4">TOTAL GERAL</td>
                                 <td className="px-6 py-4 text-center text-lg">{totalOrders}</td>
                                 <td className="px-6 py-4 text-right">100%</td>
@@ -350,15 +350,23 @@ export default function ReportsPage() {
     );
 }
 
-function KpiCard({ title, value, icon: Icon, color, trend }: any) {
-    const colors: any = {
-        blue: "bg-blue-50 text-blue-600 border-blue-100",
-        green: "bg-green-50 text-green-600 border-green-100",
-        orange: "bg-orange-50 text-orange-600 border-orange-100",
+interface KpiCardProps {
+    title: string;
+    value: string | number;
+    icon: React.ElementType;
+    color: 'blue' | 'green' | 'orange';
+    trend?: string;
+}
+
+function KpiCard({ title, value, icon: Icon, color, trend }: KpiCardProps) {
+    const colors: Record<string, string> = {
+        blue: "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-900",
+        green: "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900",
+        orange: "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-900",
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div className="card p-6">
             <div className="flex justify-between items-start mb-4">
                 <div className={`p-3 rounded-lg ${colors[color]} border`}>
                     <Icon size={24} />
@@ -367,8 +375,8 @@ function KpiCard({ title, value, icon: Icon, color, trend }: any) {
                     {trend}
                 </span>
             </div>
-            <h3 className="text-slate-500 text-sm font-medium mb-1">{title}</h3>
-            <div className="text-3xl font-bold text-slate-800">{value}</div>
+            <h3 className="text-[var(--text-secondary)] text-sm font-medium mb-1">{title}</h3>
+            <div className="text-3xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)]">{value}</div>
         </div>
     );
 }

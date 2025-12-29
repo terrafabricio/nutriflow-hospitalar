@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useOrderStore } from '@/store/useOrderStore';
-import { Users, Plus, Trash2, Search, UserPlus } from 'lucide-react';
+import { Users, Plus, Trash2, Search, UserPlus, X } from 'lucide-react';
 
 export default function PatientsPage() {
     const { patients, addPatient, removePatient, orders } = useOrderStore();
@@ -31,18 +31,17 @@ export default function PatientsPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto">
-            <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto space-y-6">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-                        <Users className="text-blue-600" size={32} />
+                    <h1 className="text-3xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] tracking-tight flex items-center gap-3">
                         Gerenciar Pacientes
                     </h1>
-                    <p className="text-slate-500">Admissão, alta e controle de ocupação</p>
+                    <p className="text-[var(--text-secondary)]">Admissão, alta e controle de ocupação</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 flex items-center gap-2 transition-colors"
+                    className="btn btn-primary"
                 >
                     <UserPlus size={18} />
                     Admitir Paciente
@@ -50,21 +49,21 @@ export default function PatientsPage() {
             </header>
 
             {/* Search Bar */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex items-center gap-3">
-                <Search className="text-slate-400" size={20} />
+            <div className="card px-4 py-3 flex items-center gap-3 bg-[var(--surface)]">
+                <Search className="text-[var(--text-muted)]" size={20} />
                 <input
                     type="text"
                     placeholder="Buscar por nome ou leito..."
-                    className="flex-1 outline-none text-slate-700"
+                    className="flex-1 bg-transparent border-none outline-none text-[var(--text-main)] placeholder-[var(--text-muted)]"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
 
             {/* Patients List */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="card overflow-hidden">
                 <table className="w-full text-left">
-                    <thead className="bg-slate-50 text-slate-600 uppercase text-xs font-bold tracking-wider">
+                    <thead className="bg-[var(--surface2)] text-[var(--text-secondary)] uppercase text-xs font-bold tracking-wider border-b border-[var(--border-subtle)]">
                         <tr>
                             <th className="px-6 py-4">Paciente</th>
                             <th className="px-6 py-4">Leito / Setor</th>
@@ -72,20 +71,20 @@ export default function PatientsPage() {
                             <th className="px-6 py-4 text-right">Ações</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-[var(--border-subtle)]">
                         {filteredPatients.length > 0 ? (
                             filteredPatients.map((patient) => (
-                                <tr key={patient.id} className="hover:bg-slate-50/50 transition-colors">
-                                    <td className="px-6 py-4 font-medium text-slate-800">{patient.name}</td>
-                                    <td className="px-6 py-4 text-slate-600">
-                                        <span className="font-bold text-slate-800">{patient.bed}</span>
-                                        <span className="text-slate-400 mx-2">|</span>
+                                <tr key={patient.id} className="hover:bg-[var(--surface2)] transition-colors">
+                                    <td className="px-6 py-4 font-medium text-[var(--text-main)]">{patient.name}</td>
+                                    <td className="px-6 py-4 text-[var(--text-secondary)]">
+                                        <span className="font-bold text-[var(--text-main)]">{patient.bed}</span>
+                                        <span className="text-[var(--border)] mx-2">|</span>
                                         {patient.ward}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getPatientDiet(patient.bed) === 'Sem prescrição ativa'
-                                            ? 'bg-slate-100 text-slate-500'
-                                            : 'bg-green-100 text-green-700'
+                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium border border-transparent ${getPatientDiet(patient.bed) === 'Sem prescrição ativa'
+                                            ? 'bg-[var(--surface2)] text-[var(--text-muted)] border-[var(--border-subtle)]'
+                                            : 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800'
                                             }`}>
                                             {getPatientDiet(patient.bed)}
                                         </span>
@@ -97,7 +96,7 @@ export default function PatientsPage() {
                                                     removePatient(patient.id);
                                                 }
                                             }}
-                                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--surface2)] rounded-lg transition-colors"
                                             title="Dar Alta (Remover)"
                                         >
                                             <Trash2 size={18} />
@@ -107,7 +106,7 @@ export default function PatientsPage() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
+                                <td colSpan={4} className="px-6 py-12 text-center text-[var(--text-muted)] italic">
                                     Nenhum paciente encontrado.
                                 </td>
                             </tr>
@@ -118,73 +117,81 @@ export default function PatientsPage() {
 
             {/* Admission Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-                        <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                            <UserPlus className="text-blue-600" />
-                            Admitir Novo Paciente
-                        </h2>
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all">
+                    <div className="card w-full max-w-md p-6 shadow-2xl scale-100 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] flex items-center gap-2">
+                                <UserPlus className="text-[var(--primary)]" />
+                                Admitir Novo Paciente
+                            </h2>
+                            <button onClick={() => setIsModalOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--text-main)]">
+                                <X size={20} />
+                            </button>
+                        </div>
+
                         <form onSubmit={handleAddPatient} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Nome Completo</label>
                                 <input
                                     required
                                     type="text"
-                                    className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="input"
                                     value={newPatient.name}
                                     onChange={e => setNewPatient({ ...newPatient, name: e.target.value })}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Leito</label>
+                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Leito</label>
                                     <input
                                         required
                                         type="text"
                                         placeholder="Ex: 101A"
-                                        className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="input"
                                         value={newPatient.bed}
                                         onChange={e => setNewPatient({ ...newPatient, bed: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Setor/Ala</label>
-                                    <select
-                                        required
-                                        className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                        value={newPatient.ward}
-                                        onChange={e => setNewPatient({ ...newPatient, ward: e.target.value })}
-                                    >
-                                        <option value="">Selecione...</option>
-                                        <option value="Clínica Médica">Clínica Médica</option>
-                                        <option value="Cirúrgica">Cirúrgica</option>
-                                        <option value="UTI">UTI</option>
-                                        <option value="Pediatria">Pediatria</option>
-                                        <option value="Maternidade">Maternidade</option>
-                                    </select>
+                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Setor/Ala</label>
+                                    <div className="relative">
+                                        <select
+                                            required
+                                            className="input appearance-none"
+                                            value={newPatient.ward}
+                                            onChange={e => setNewPatient({ ...newPatient, ward: e.target.value })}
+                                        >
+                                            <option value="">Selecione...</option>
+                                            <option value="Clínica Médica">Clínica Médica</option>
+                                            <option value="Cirúrgica">Cirúrgica</option>
+                                            <option value="UTI">UTI</option>
+                                            <option value="Pediatria">Pediatria</option>
+                                            <option value="Maternidade">Maternidade</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Alergias (Opcional)</label>
+                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Alergias (Opcional)</label>
                                     <input
                                         type="text"
-                                        placeholder="Ex: Camarão, Lactose..."
-                                        className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-red-600 placeholder:text-slate-400"
+                                        placeholder="Ex: Camarão..."
+                                        className="input border-red-200 focus:border-[var(--danger)] focus:ring-red-100 placeholder:text-red-200 text-[var(--danger)]"
                                         value={newPatient.allergies || ''}
                                         onChange={e => setNewPatient({ ...newPatient, allergies: e.target.value })}
                                     />
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-3 mt-6">
+                            <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-[var(--border-subtle)]">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium"
+                                    className="btn btn-ghost"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+                                    className="btn btn-primary"
                                 >
                                     Confirmar Admissão
                                 </button>

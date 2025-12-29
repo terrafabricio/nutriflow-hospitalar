@@ -84,18 +84,17 @@ export default function KitchenPage() {
     };
 
     return (
-        <div className="h-[calc(100vh-6rem)] flex flex-col">
-            <header className="mb-6 flex justify-between items-center">
+        <div className="h-[calc(100vh-6rem)] flex flex-col space-y-4">
+            <header className="shrink-0 flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-                        <ChefHat className="text-orange-500" size={32} />
-                        Cozinha - Produção
+                    <h1 className="text-3xl font-bold text-[var(--text-main)] font-[family-name:var(--font-space)] tracking-tight flex items-center gap-3">
+                        <ChefHat className="text-[var(--warning)]" size={32} />
+                        Cozinha <span className="text-[var(--text-muted)] font-light text-2xl">| Produção</span>
                     </h1>
-                    <p className="text-slate-500">Gerenciamento de pedidos em tempo real</p>
                 </div>
             </header>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden min-h-0">
                 {/* COLUNA 1: NOVOS */}
                 <KanbanColumn
                     title="Novos Pedidos"
@@ -105,7 +104,7 @@ export default function KitchenPage() {
                     headerAction={
                         <button
                             onClick={handlePrintAll}
-                            className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 flex items-center gap-1 transition-colors"
+                            className="btn btn-ghost text-xs px-2 py-1 h-auto min-h-0 flex items-center gap-1"
                             title="Imprimir todas as etiquetas"
                         >
                             <Printer size={14} />
@@ -181,78 +180,101 @@ export default function KitchenPage() {
     );
 }
 
-function KanbanColumn({ title, count, color, icon: Icon, children, headerAction }: any) {
-    const bgColors: any = {
-        blue: "bg-blue-50 border-blue-200",
-        orange: "bg-orange-50 border-orange-200",
-        green: "bg-green-50 border-green-200",
+interface KanbanColumnProps {
+    title: string;
+    count: number;
+    color: 'blue' | 'orange' | 'green';
+    icon: React.ElementType;
+    children: React.ReactNode;
+    headerAction?: React.ReactNode;
+}
+
+function KanbanColumn({ title, count, color, icon: Icon, children, headerAction }: KanbanColumnProps) {
+    const bgColors: Record<string, string> = {
+        blue: "bg-blue-50/50 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900",
+        orange: "bg-orange-50/50 border-orange-100 dark:bg-orange-900/10 dark:border-orange-900",
+        green: "bg-emerald-50/50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-900",
     };
 
-    const textColors: any = {
-        blue: "text-blue-800",
-        orange: "text-orange-800",
-        green: "text-green-800",
+    const textColors: Record<string, string> = {
+        blue: "text-blue-700 dark:text-blue-400",
+        orange: "text-orange-700 dark:text-orange-400",
+        green: "text-emerald-700 dark:text-emerald-400",
+    };
+
+    const headerColors: Record<string, string> = {
+        blue: "bg-blue-50/80 border-blue-100 dark:bg-blue-900/20 dark:border-blue-800",
+        orange: "bg-orange-50/80 border-orange-100 dark:bg-orange-900/20 dark:border-orange-800",
+        green: "bg-emerald-50/80 border-emerald-100 dark:bg-emerald-900/20 dark:border-emerald-800",
     };
 
     return (
-        <div className={`flex flex-col h-full rounded-xl border-2 ${bgColors[color]} overflow-hidden`}>
-            <div className={`p-4 border-b ${bgColors[color]} flex justify-between items-center`}>
+        <div className={`flex flex-col h-full rounded-xl border ${bgColors[color]} overflow-hidden backdrop-blur-sm`}>
+            <div className={`p-3 border-b ${headerColors[color]} flex justify-between items-center`}>
                 <div className="flex items-center gap-2 font-bold">
-                    <Icon size={20} className={textColors[color]} />
-                    <span className={textColors[color]}>{title}</span>
+                    <Icon size={18} className={textColors[color]} />
+                    <span className={`text-sm tracking-tight ${textColors[color]}`}>{title}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     {headerAction}
-                    <span className="bg-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
+                    <span className="bg-[var(--surface)] px-2 py-0.5 rounded-md text-xs font-bold shadow-sm border border-[var(--border-subtle)]">
                         {count}
                     </span>
                 </div>
             </div>
-            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+            <div className="flex-1 p-3 overflow-y-auto space-y-3 custom-scrollbar">
                 {children}
             </div>
         </div>
     );
 }
 
-function OrderCard({ order, onClick, onAction, actionLabel, actionColor, readOnly, onPrint, allergies }: { order: Order, onClick?: () => void, onAction?: (e: any) => void, actionLabel?: string, actionColor?: string, readOnly?: boolean, onPrint?: (e: any) => void, allergies?: string }) {
+function OrderCard({ order, onClick, onAction, actionLabel, actionColor, readOnly, onPrint, allergies }: { order: Order, onClick?: () => void, onAction?: (e: React.MouseEvent) => void, actionLabel?: string, actionColor?: string, readOnly?: boolean, onPrint?: (e: React.MouseEvent) => void, allergies?: string }) {
     const isCritical = order.modifier === 'Neutropênica' || order.modifier === 'Renal';
     const isFasting = order.isFasting;
 
     return (
         <div
             onClick={onClick}
-            className={`bg-white p-4 rounded-lg shadow-sm border-l-4 hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 ${isFasting ? 'border-l-red-600 bg-red-50 ring-2 ring-red-100' : isCritical ? 'border-l-red-500' : 'border-l-slate-300'}`}
+            className={`card p-4 hover:shadow-md cursor-pointer transform hover:-translate-y-1 border-l-4 transition-all ${isFasting
+                ? 'border-l-[var(--danger)] bg-red-50/50 dark:bg-red-900/10'
+                : isCritical
+                    ? 'border-l-[var(--warning)]'
+                    : 'border-l-[var(--border-subtle)] hover:border-l-[var(--primary)]'
+                }`}
         >
             <div className="flex justify-between items-start mb-2">
-                <span className="font-bold text-slate-800 text-lg">{order.bed}</span>
+                <span className="font-bold text-[var(--text-main)] text-lg font-[family-name:var(--font-space)]">{order.bed}</span>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onPrint}
-                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--surface2)] rounded transition-colors"
                         title="Imprimir Etiqueta"
                     >
                         <Printer size={16} />
                     </button>
-                    <span className="text-xs text-slate-400">{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span className="text-[10px] font-medium text-[var(--text-muted)] bg-[var(--surface2)] px-1.5 py-0.5 rounded">
+                        {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
                 </div>
             </div>
 
             <div className="mb-3">
-                <div className="font-medium text-slate-700">{order.patientName}</div>
+                <div className="font-medium text-[var(--text-secondary)] text-sm mb-1">{order.patientName}</div>
 
                 {isFasting ? (
-                    <div className="mt-2 animate-pulse">
-                        <div className="text-lg font-black text-red-600 uppercase tracking-wider">JEJUM ABSOLUTO</div>
-                        <div className="text-xs font-bold text-red-500 mt-1">Motivo: {order.fastingReason}</div>
+                    <div className="mt-2 animate-pulse p-2 bg-red-100/50 rounded-lg border border-red-200">
+                        <div className="text-sm font-black text-red-600 uppercase tracking-wider flex items-center gap-1">JEJUM ABSOLUTO</div>
+                        <div className="text-xs font-bold text-red-500 mt-0.5">Motivo: {order.fastingReason}</div>
                     </div>
                 ) : (
                     <>
-                        <div className="text-sm text-slate-600 mt-1">
-                            <span className="font-semibold">Dieta:</span> {order.dietType}
+                        <div className="text-sm text-[var(--text-main)] mt-1 flex items-baseline gap-1">
+                            <span className="font-semibold text-xs text-[var(--text-muted)] uppercase tracking-wider">Dieta:</span>
+                            <span className="font-medium">{order.dietType}</span>
                         </div>
                         {order.modifier !== 'Nenhuma' && (
-                            <div className={`text-xs font-bold mt-1 px-2 py-1 rounded inline-block ${isCritical ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'}`}>
+                            <div className={`text-[10px] font-bold mt-1 px-2 py-0.5 rounded inline-block uppercase tracking-wide ${isCritical ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'}`}>
                                 {order.modifier}
                             </div>
                         )}
@@ -260,13 +282,13 @@ function OrderCard({ order, onClick, onAction, actionLabel, actionColor, readOnl
                 )}
 
                 {allergies && (
-                    <div className="mt-2 bg-red-50 border border-red-100 p-2 rounded text-xs text-red-700 font-bold animate-pulse">
+                    <div className="mt-2 bg-red-50 border border-red-100 p-2 rounded text-xs text-red-700 font-bold animate-pulse flex items-center gap-1">
                         ⚠️ ALERGIA: {allergies}
                     </div>
                 )}
                 {order.hasCompanion && !isFasting && (
                     <div className="mt-1">
-                        <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded inline-block">
+                        <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded inline-block">
                             + Acompanhante
                         </span>
                     </div>
@@ -276,15 +298,17 @@ function OrderCard({ order, onClick, onAction, actionLabel, actionColor, readOnl
             {!readOnly && onAction && (
                 <button
                     onClick={onAction}
-                    className={`w-full py-2 rounded-md text-sm font-medium text-white transition-colors flex items-center justify-center gap-2 ${actionColor === 'blue' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-orange-500 hover:bg-orange-600'
+                    className={`btn btn-sm w-full gap-2 ${actionColor === 'blue'
+                        ? 'btn-primary'
+                        : 'bg-orange-500 hover:bg-orange-600 text-white'
                         }`}
                 >
-                    {actionLabel} <ArrowRight size={16} />
+                    {actionLabel} <ArrowRight size={14} />
                 </button>
             )}
 
             {readOnly && (
-                <div className="text-center py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md border border-green-100">
+                <div className="text-center py-2 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-md border border-emerald-100 uppercase tracking-wide">
                     Aguardando Entrega
                 </div>
             )}
